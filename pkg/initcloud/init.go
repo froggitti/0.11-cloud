@@ -19,6 +19,10 @@ import (
 	"github.com/kercre123/0.11-cloud/pkg/web"
 )
 
+//hardcoded variables :(
+var chipperPort = "3030"
+var httpServ = "1997"
+
 var Listener net.Listener
 var GRPCServer *grpcserver.Server
 
