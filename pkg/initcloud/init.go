@@ -44,11 +44,11 @@ func InitCloud() {
 	if vars.DisableWhiteList {
 		fmt.Println("WHITELIST IS DISABLED.")
 	}
-	//chipperPort := os.Getenv(vars.ChipperPortEnv)
-	//if chipperPort == "" {
-	//	fmt.Println("you must provide a chipper port (fulfill all env vars)")
-	//	os.Exit(1)
-	//}
+	chipperPort := os.Getenv(vars.ChipperPortEnv)
+	if chipperPort == "" {
+		fmt.Println("you must provide a chipper port (fulfill all env vars)")
+		os.Exit(1)
+	}
 	vars.Init()
 	err := stt.Init()
 	if err != nil {
@@ -70,17 +70,17 @@ func InitCloud() {
 		os.Exit(1)
 	}
 
-	//httpServ := MkHTTPS(os.Getenv(vars.WebPortEnv))
+	httpServ := MkHTTPS(os.Getenv(vars.WebPortEnv))
 
 	web.AddSecretsAPI()
 	web.AddSecretsWebroot()
 	go func() {
-		err := httpServ.ListenAndServeTLS(":1997", "/etc/letsencrypt/live/voice-011.froggitti.net/fullchain.pem", "/etc/letsencrypt/live/voice-011.froggitti.net/privkey.pem")
+		err := httpServ.ListenAndServeTLS("", "")
 		if err != nil {
 			fmt.Println("error httping: " + err.Error())
 		}
 	}()
-	fmt.Println("serving chipper at port 3030")
+	fmt.Println("serving chipper at port " + chipperPort)
 	grpcServe(Listener, serv)
 	for {
 		time.Sleep(time.Hour * vars.PollHrs)
@@ -92,18 +92,18 @@ func InitCloud() {
 		if string(certBytes) != string(vars.TLSCert) {
 			fmt.Println("cert is different, restarting servers")
 			vars.TLSCert = certBytes
-			//keyBytes, _ := os.ReadFile(os.Getenv(vars.KeyFileEnv))
+			keyBytes, _ := os.ReadFile(os.Getenv(vars.KeyFileEnv))
 			vars.TLSKey = keyBytes
 			GRPCServer.Stop()
 			cert, _ = tls.X509KeyPair(vars.TLSCert, vars.TLSKey)
-			Listener, err = tls.Listen("tcp", ":3030", &tls.Config{
+			Listener, err = tls.Listen("tcp", ":"+chipperPort, &tls.Config{
 				Certificates: []tls.Certificate{cert},
 				CipherSuites: nil,
 			})
 			httpServ.Shutdown(context.TODO())
-			//httpServ = MkHTTPS(os.Getenv(vars.WebPortEnv))
+			httpServ = MkHTTPS(os.Getenv(vars.WebPortEnv))
 			go func() {
-				err := httpServ.ListenAndServeTLS(":1997", "/etc/letsencrypt/live/voice-011.froggitti.net/fullchain.pem", "/etc/letsencrypt/live/voice-011.froggitti.net/privkey.pem")
+				err := httpServ.ListenAndServeTLS("", "")
 				if err != nil {
 					fmt.Println("error httping: " + err.Error())
 				}
