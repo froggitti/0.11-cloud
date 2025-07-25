@@ -80,7 +80,7 @@ func InitCloud() {
 			fmt.Println("error httping: " + err.Error())
 		}
 	}()
-	fmt.Println("serving chipper at port 3030 (hardcoded....))
+	fmt.Println("serving chipper at port 3030")
 	grpcServe(Listener, serv)
 	for {
 		time.Sleep(time.Hour * vars.PollHrs)
