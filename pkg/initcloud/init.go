@@ -19,10 +19,6 @@ import (
 	"github.com/kercre123/0.11-cloud/pkg/web"
 )
 
-//hardcoded variables :(
-var chipperPort = "3030"
-var httpServ = "1997"
-
 var Listener net.Listener
 var GRPCServer *grpcserver.Server
 
@@ -49,10 +45,10 @@ func InitCloud() {
 		fmt.Println("WHITELIST IS DISABLED.")
 	}
 	chipperPort := 3030
-	if chipperPort == "" {
-		fmt.Println("you must provide a chipper port (fulfill all env vars)")
-		os.Exit(1)
-	}
+//	if chipperPort == "" {
+//		fmt.Println("you must provide a chipper port (fulfill all env vars)")
+//		os.Exit(1)
+//	}
 	vars.Init()
 	err := stt.Init()
 	if err != nil {
