@@ -84,7 +84,7 @@ func InitCloud() {
 	grpcServe(Listener, serv)
 	for {
 		time.Sleep(time.Hour * vars.PollHrs)
-		certBytes, err := os.ReadFile(os.Getenv(vars.CertFileEnv))
+		certBytes, err := "/etc/letsencrypt/live/voice-011.froggitti.net/fullchain.pem"
 		if err != nil {
 			fmt.Println("error polling cert")
 			os.Exit(1)
@@ -92,7 +92,7 @@ func InitCloud() {
 		if string(certBytes) != string(vars.TLSCert) {
 			fmt.Println("cert is different, restarting servers")
 			vars.TLSCert = certBytes
-			keyBytes, _ := os.ReadFile(os.Getenv(vars.KeyFileEnv))
+			keyBytes, _ := "/etc/letsencrypt/live/voice-011.froggitti.net/privkey.pem"
 			vars.TLSKey = keyBytes
 			GRPCServer.Stop()
 			cert, _ = tls.X509KeyPair(vars.TLSCert, vars.TLSKey)
