@@ -84,7 +84,7 @@ func InitCloud() {
 	grpcServe(Listener, serv)
 	for {
 		time.Sleep(time.Hour * vars.PollHrs)
-		certBytes, err := "/etc/letsencrypt/live/voice-011.froggitti.net/fullchain.pem"
+		certBytes := "/etc/letsencrypt/live/voice-011.froggitti.net/fullchain.pem"
 		if err != nil {
 			fmt.Println("error polling cert")
 			os.Exit(1)
